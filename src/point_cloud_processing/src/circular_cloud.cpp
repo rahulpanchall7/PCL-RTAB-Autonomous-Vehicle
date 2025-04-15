@@ -4,16 +4,27 @@
 #include <pcl/filters/voxel_grid.h>
 
 int main(){
-    pcl::PointCloud<pcl::PointXYZ> cloud; // for 3d point cloud of every object
-    cloud.push_back(pcl::PointXYZ(1.0,2.0,3.0)); // add a point cloud
-    cloud.push_back(pcl::PointXYZ(5.0,7.0,5.0)); 
-    cloud.push_back(pcl::PointXYZ(69.0,54.0,34.0)); 
-    cloud.push_back(pcl::PointXYZ(6.0,5.0,354.0)); 
-    cloud.push_back(pcl::PointXYZ(9.0,54.0,35.0)); 
-    cloud.push_back(pcl::PointXYZ(45.0,54.0,65.0)); 
+    pcl::PointCloud<pcl::PointXYZRGB> cloud; // for 3d point cloud of every object in RGB
 
+    double radius = 3.0;
+    int num_points = 50;
+    double angular_step_size = 2.0*M_PI_2/num_points;
 
-    std::string path = "/home/rahul/nav_pcl_ws/src/point_cloud_processing/point_clouds/plane.pcd";
+    for(int i=0; i<num_points; i++){
+        pcl::PointXYZRGB point;
+        double angle = i *angular_step_size;
+        point.x= radius * std::cos(angle);
+        point.y= radius * std::sin(angle);
+        point.z= 1.0;
+    
+        point.r= 255*std::cos(angle);
+        point.g= 255*std::sin(angle);
+        point.b= 255*std::cos(angle +M_PI_2);
+    
+        cloud.push_back(point);
+    }
+
+    std::string path = "/home/rahul/nav_pcl_ws/src/point_cloud_processing/point_clouds/circular.pcd";
     pcl::io::savePCDFileASCII(path, cloud); // to save point clouds in a file
 
     std::cout<<cloud.size();

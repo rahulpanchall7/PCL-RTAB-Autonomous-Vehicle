@@ -20,9 +20,12 @@ target_link_libraries(pcd_import ${PCL_LIBRARIES})
 add_executable(plane_cloud src/planner_cloud.cpp)
 target_link_libraries(plane_cloud ${PCL_LIBRARIES})
 
+add_executable(circle_cloud src/circular_cloud.cpp)
+target_link_libraries(circle_cloud ${PCL_LIBRARIES})
+
 # and here too
 install(TARGETS
-  pcd_import plane_cloud
+  pcd_import plane_cloud circle_cloud
   DESTINATION lib/${PROJECT_NAME}  
 )
 
