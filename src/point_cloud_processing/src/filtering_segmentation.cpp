@@ -81,71 +81,72 @@ int main()
     indices_extractor.filter(*plane_segmented_cloud);
     cloud_saver("plane_segmented.pcd",path,plane_segmented_cloud);
 
-//     // ********************************     Cylinder Segmentation
-//     // Normal Extraction Objects
-//     pcl::ModelCoefficients::Ptr       cylinder_co    (new pcl::ModelCoefficients);
-// 	pcl::PointIndices::Ptr            cylinder_in    (new pcl::PointIndices);
-//     pcl::search::KdTree<PointT>::Ptr  tree           (new pcl::search::KdTree<PointT> ());
-//     pcl::PointCloud<pcl::Normal>::Ptr cloud_normals  (new pcl::PointCloud<pcl::Normal>);
-//     pcl::PointCloud<PointT>::Ptr      cylinder_cloud (new pcl::PointCloud<PointT> ());
-//     // Normals computation objects
-//     pcl::NormalEstimation<PointT,pcl::Normal>            normals_estimator;
-//     pcl::SACSegmentationFromNormals<PointT, pcl::Normal> cylinder_segmentor;
-//     pcl::ExtractIndices<PointT>                          cylinder_indices_extractor;
-//     pcl::ExtractIndices<pcl::Normal>                     cylinder_normal_indices_extractor;
-// // Performing estimation of normals
-//     normals_estimator.setSearchMethod(tree);
-//     normals_estimator.setInputCloud(plane_segmented_cloud);
-//     normals_estimator.setKSearch(30);
-//     normals_estimator.compute(*cloud_normals);
+    // ********************************     Cylinder Segmentation
+    // Normal Extraction Objects
+    pcl::ModelCoefficients::Ptr       cylinder_co    (new pcl::ModelCoefficients);
+	pcl::PointIndices::Ptr            cylinder_in    (new pcl::PointIndices);
+    pcl::search::KdTree<PointT>::Ptr  tree           (new pcl::search::KdTree<PointT> ());
+    pcl::PointCloud<pcl::Normal>::Ptr cloud_normals  (new pcl::PointCloud<pcl::Normal>);
+    pcl::PointCloud<PointT>::Ptr      cylinder_cloud (new pcl::PointCloud<PointT> ());
 
-//     // Parameters for segmentation
-//     cylinder_segmentor.setOptimizeCoefficients(true);
-// 	cylinder_segmentor.setModelType(pcl::SACMODEL_CYLINDER);
-// 	cylinder_segmentor.setMethodType(pcl::SAC_RANSAC);
-// 	cylinder_segmentor.setNormalDistanceWeight(0.5);
-// 	cylinder_segmentor.setMaxIterations(10000);
-// 	cylinder_segmentor.setDistanceThreshold(0.05);
-// 	cylinder_segmentor.setRadiusLimits(0.1, 0.4);
-//   int looping_var=0;
+    // Normals computation objects
+    pcl::NormalEstimation<PointT,pcl::Normal>            normals_estimator;
+    pcl::SACSegmentationFromNormals<PointT, pcl::Normal> cylinder_segmentor;
+    pcl::ExtractIndices<PointT>                          cylinder_indices_extractor;
+    pcl::ExtractIndices<pcl::Normal>                     cylinder_normal_indices_extractor;
 
-//     while(true){
+    // Performing estimation of normals
+    normals_estimator.setSearchMethod(tree);
+    normals_estimator.setInputCloud(plane_segmented_cloud);
+    normals_estimator.setKSearch(30);
+    normals_estimator.compute(*cloud_normals);
 
+    // Parameters for segmentation
+    cylinder_segmentor.setOptimizeCoefficients(true);
+	cylinder_segmentor.setModelType(pcl::SACMODEL_CYLINDER);
+	cylinder_segmentor.setMethodType(pcl::SAC_RANSAC);
+	cylinder_segmentor.setNormalDistanceWeight(0.5);
+	cylinder_segmentor.setMaxIterations(10000);
+	cylinder_segmentor.setDistanceThreshold(0.05);
+	cylinder_segmentor.setRadiusLimits(0.1, 0.4);
+    
+    int looping_var=0;
 
-//     // Appplying segmentation
-//     cylinder_segmentor.setInputCloud(plane_segmented_cloud);
-// 	cylinder_segmentor.setInputNormals(cloud_normals);
-// 	cylinder_segmentor.segment(*cylinder_in,*cylinder_co);
+    while(true){
 
-//     // extracting indices
-//     cylinder_indices_extractor.setInputCloud(plane_segmented_cloud);
-//     cylinder_indices_extractor.setIndices(cylinder_in);
-//     cylinder_indices_extractor.setNegative(false);
-//     cylinder_indices_extractor.filter(*cylinder_cloud);
+        // Appplying segmentation
+        cylinder_segmentor.setInputCloud(plane_segmented_cloud);
+        cylinder_segmentor.setInputNormals(cloud_normals);
+        cylinder_segmentor.segment(*cylinder_in,*cylinder_co);
 
-//     if(!cylinder_cloud->points.empty()){
-//         std::stringstream loop_name_cloud; loop_name_cloud <<"cloud_"<<looping_var<<".pcd";
-//         std::cout<<"Cloud Contains " <<cylinder_cloud->points.size()<<std::endl;
-//         if(cylinder_cloud->points.size() > 50){
-//           cloud_saver(loop_name_cloud.str(),path,cylinder_cloud);
-//             looping_var++;
-//         }
+        // extracting indices
+        cylinder_indices_extractor.setInputCloud(plane_segmented_cloud);
+        cylinder_indices_extractor.setIndices(cylinder_in);
+        cylinder_indices_extractor.setNegative(false);
+        cylinder_indices_extractor.filter(*cylinder_cloud);
 
-//         cylinder_indices_extractor.setNegative(true);
-//         cylinder_indices_extractor.filter(*plane_segmented_cloud);
+        if(!cylinder_cloud->points.empty()){
+            std::stringstream loop_name_cloud; loop_name_cloud <<"cloud_"<<looping_var<<".pcd";
+            std::cout<<"Cloud Contains " <<cylinder_cloud->points.size()<<std::endl;
+            if(cylinder_cloud->points.size() > 50){
+                cloud_saver(loop_name_cloud.str(),path,cylinder_cloud);
+                    looping_var++;
+            }
 
-//         // processing normals
-//         cylinder_normal_indices_extractor.setInputCloud(cloud_normals);
-//         cylinder_normal_indices_extractor.setIndices(cylinder_in);
-//         cylinder_normal_indices_extractor.setNegative(true);
-//         cylinder_normal_indices_extractor.filter(*cloud_normals);
+            cylinder_indices_extractor.setNegative(true);
+            cylinder_indices_extractor.filter(*plane_segmented_cloud);
 
-//     }
-//     else{
-//         return 0;
-//     }
+            // processing normals
+            cylinder_normal_indices_extractor.setInputCloud(cloud_normals);
+            cylinder_normal_indices_extractor.setIndices(cylinder_in);
+            cylinder_normal_indices_extractor.setNegative(true);
+            cylinder_normal_indices_extractor.filter(*cloud_normals);
 
+        }
+        else{
+            return 0;
+        }
+    }
 
-//     }
   return 0;
 }
