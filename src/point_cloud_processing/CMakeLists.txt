@@ -23,9 +23,12 @@ target_link_libraries(plane_cloud ${PCL_LIBRARIES})
 add_executable(circle_cloud src/circular_cloud.cpp)
 target_link_libraries(circle_cloud ${PCL_LIBRARIES})
 
+add_executable(filter_segment src/filtering_segmentation.cpp)
+target_link_libraries(filter_segment ${PCL_LIBRARIES})
+
 # and here too
 install(TARGETS
-  pcd_import plane_cloud circle_cloud
+  pcd_import plane_cloud circle_cloud filter_segment
   DESTINATION lib/${PROJECT_NAME}  
 )
 
