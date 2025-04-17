@@ -54,7 +54,7 @@ def generate_launch_description():
           'qos_image':qos,
           'qos_imu':qos,
           'Reg/Force3DoF':'true',
-          'Optimizer/GravitySigma':'0', # Disable imu constraints (we are already in 2D)
+          'Optimizer/GravitySigma':'0' # Disable imu constraints (we are already in 2D)
     }
 
     remappings=[
