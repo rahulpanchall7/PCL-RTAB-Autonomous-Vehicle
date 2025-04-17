@@ -27,6 +27,7 @@ typedef pcl::PointXYZ PointT;
 int main() {
     pcl::PointCloud<PointT>::Ptr cloud (new pcl::PointCloud<PointT>);
     pcl::PointCloud<PointT>::Ptr voxel_cloud (new pcl::PointCloud<PointT>);
+    pcl::PointCloud<PointT>::Ptr passthrough_cloud (new pcl::PointCloud<PointT>);
     pcl::PCDReader cloud_reader;
     pcl::PCDWriter cloud_writer;
 
@@ -34,6 +35,7 @@ int main() {
     std::string path = "/home/rahul/nav_pcl_ws/src/point_cloud_processing/point_clouds/";
     std::string input_cloud = "tb3_world.pcd";
     std::string output_cloud = "voxel_cloud.pcd";
+    std::string pass_through_output_cloud = "pass_x_cloud.pcd";
     cloud_reader.read(path+input_cloud , *cloud);
 
     //voxel grid
@@ -42,8 +44,17 @@ int main() {
     voxel_filter.setLeafSize(0.05, 0.05, 0.05);
     voxel_filter.filter(*voxel_cloud);
 
+    // pass through filter
+    pcl::PassThrough<PointT> passing_x;
+    passing_x.setInputCloud(voxel_cloud);
+    passing_x.setFilterFieldName("x");
+    passing_x.setFilterLimits(-1.5, 1.5);
+    passing_x.filter(*passthrough_cloud);
+
+
     // cloud writing
-    cloud_writer.write<PointT>(path+output_cloud, *voxel_cloud);
+    // cloud_writer.write<PointT>(path+output_cloud, *voxel_cloud);
+    cloud_writer.write<PointT>(path+pass_through_output_cloud, *passthrough_cloud);
 
     return 0;
 }
