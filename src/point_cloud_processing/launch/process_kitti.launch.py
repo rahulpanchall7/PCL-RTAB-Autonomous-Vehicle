@@ -9,7 +9,7 @@ def generate_launch_description():
         Node(
             package='ros2_kitti_publishers', executable='kitti_publishers', output='screen',
             ),
-        # Node(
-        #     package='point_cloud_processing', executable='traffic_segmentation', output='screen',
-        #     ),
+        Node(
+            package='point_cloud_processing', executable='traffic_segmentation', output='screen',
+            ),
     ])

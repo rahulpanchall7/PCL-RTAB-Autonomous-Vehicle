@@ -44,9 +44,14 @@ add_executable(kd_tree src/kd_tree.cpp)
 # ament_target_dependencies(kd_tree rclcpp sensor_msgs pcl_conversions)
 target_link_libraries(kd_tree ${PCL_LIBRARIES})
 
+add_executable(traffic_segmentation src/traffic_segmentation.cpp)
+ament_target_dependencies(traffic_segmentation rclcpp sensor_msgs pcl_conversions visualization_msgs)
+target_link_libraries(traffic_segmentation ${PCL_LIBRARIES})
+
+
 # and here too
 install(TARGETS
-  pcd_import plane_cloud circle_cloud filter_segment point_path_draw kitti_data_voxel kd_tree
+  pcd_import plane_cloud circle_cloud filter_segment point_path_draw kitti_data_voxel kd_tree traffic_segmentation
   DESTINATION lib/${PROJECT_NAME}  
 )
 
