@@ -8,6 +8,9 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(PCL REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(pcl_conversions REQUIRED)
 
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
@@ -30,6 +33,7 @@ add_executable(point_path_draw src/point_path_drawing.cpp)
 target_link_libraries(point_path_draw ${PCL_LIBRARIES})
 
 add_executable(kitti_data_voxel src/kitti_data_voxel.cpp)
+ament_target_dependencies(kitti_data_voxel rclcpp sensor_msgs pcl_conversions)
 target_link_libraries(kitti_data_voxel ${PCL_LIBRARIES})
 
 # and here too
