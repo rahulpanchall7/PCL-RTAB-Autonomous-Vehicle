@@ -29,9 +29,12 @@ target_link_libraries(filter_segment ${PCL_LIBRARIES})
 add_executable(point_path_draw src/point_path_drawing.cpp)
 target_link_libraries(point_path_draw ${PCL_LIBRARIES})
 
+add_executable(kitti_data_voxel src/kitti_data_voxel.cpp)
+target_link_libraries(kitti_data_voxel ${PCL_LIBRARIES})
+
 # and here too
 install(TARGETS
-  pcd_import plane_cloud circle_cloud filter_segment point_path_draw
+  pcd_import plane_cloud circle_cloud filter_segment point_path_draw kitti_data_voxel
   DESTINATION lib/${PROJECT_NAME}  
 )
 
